@@ -12,13 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-const linkMenu = [
-  {name: "Dashboard", icon: HomeIcon, href: "/"},
-  {name: "Clients", icon: UserIcon, href: "/clients"},
-  // {name: 'Routines', icon: ClipboardIcon},
-  // {name: 'Schedule', icon: CalendarIcon},
-];
+import {linkMenu} from "@/lib/link-menu";
 
 export function SideNavMobile() {
   return (

@@ -15,13 +15,7 @@ import {
 import {ModeToggle} from "../dark-toggle";
 
 import {Button} from "@/components/ui/button";
-
-const linkMenu = [
-  {name: "Dashboard", icon: HomeIcon, href: "/"},
-  {name: "Clients", icon: UserIcon, href: "/clients"},
-  // {name: 'Routines', icon: ClipboardIcon},
-  // {name: 'Schedule', icon: CalendarIcon},
-];
+import {linkMenu} from "@/lib/link-menu";
 
 export function SideNav() {
   return (

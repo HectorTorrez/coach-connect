@@ -14,18 +14,14 @@ import {
   Weight,
 } from "lucide-react";
 import {DropdownMenuTrigger} from "@radix-ui/react-dropdown-menu";
+import {usePathname} from "next/navigation";
 
 import {ModeToggle} from "../dark-toggle";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuPortal,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
 } from "../ui/dropdown-menu";
 
 import {Button} from "@/components/ui/button";
@@ -36,6 +32,7 @@ import {useMetric} from "@/context/metric-context";
 export function SideNav() {
   const {handleChangeMetric, metric} = useMetric();
   const [position, setPosition] = useState(metric);
+  const pathname = usePathname();
 
   const onMetricChange = (value: string) => {
     handleChangeMetric(value);
@@ -67,7 +64,12 @@ export function SideNav() {
                 return (
                   <Link
                     key={item.name}
-                    className="flex items-center gap-3 rounded-lg px-3 py-2  transition-all hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+                    className={cn(
+                      "flex items-center gap-3 rounded-lg px-3 py-2  transition-all hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50",
+                      {
+                        "text-accent, bg-[#27272a31] dark:bg-[#76767931]": pathname === item.href,
+                      },
+                    )}
                     href={item.href}
                   >
                     <Icon className="h-4 w-4" />

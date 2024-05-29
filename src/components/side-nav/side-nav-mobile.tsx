@@ -1,5 +1,5 @@
 "use client";
-import {ClipboardIcon, Dot, HomeIcon, Menu, UserIcon, Weight} from "lucide-react";
+import {ChevronRight, ClipboardIcon, Dot, HomeIcon, Menu, UserIcon, Weight} from "lucide-react";
 import Link from "next/link";
 import {
   DropdownMenuGroup,
@@ -8,6 +8,7 @@ import {
   DropdownMenuSubTrigger,
 } from "@radix-ui/react-dropdown-menu";
 import {useState} from "react";
+import {usePathname} from "next/navigation";
 
 import {Button} from "../ui/button";
 import {ModeToggle} from "../dark-toggle";
@@ -30,6 +31,7 @@ import {cn} from "@/lib/utils";
 export function SideNavMobile() {
   const {handleChangeMetric, metric} = useMetric();
   const [position, setPosition] = useState(metric);
+  const pathname = usePathname();
 
   const onMetricChange = (value: string) => {
     handleChangeMetric(value);
@@ -52,7 +54,12 @@ export function SideNavMobile() {
 
           return (
             <DropdownMenuItem key={item.name} asChild>
-              <Link className="flex items-center gap-2" href={item.href}>
+              <Link
+                className={cn("flex items-center gap-2", {
+                  "text-accent, bg-[#27272a31] dark:bg-[#76767931]": pathname === item.href,
+                })}
+                href={item.href}
+              >
                 <Icon className="h-4 w-4" />
                 {item.name}
               </Link>
@@ -61,9 +68,12 @@ export function SideNavMobile() {
         })}
         <DropdownMenuGroup>
           <DropdownMenuSub>
-            <DropdownMenuSubTrigger className="flex items-center gap-2 px-2 py-1.5">
-              <Weight className="h-4 w-4" />
-              <span>Metrics</span>
+            <DropdownMenuSubTrigger className="flex items-center gap-2 px-3 py-1.5">
+              <section className="flex items-center gap-2 ">
+                <Weight className="h-4 w-4" />
+                <span>Metrics</span>
+              </section>
+              <ChevronRight className="h-4 w-4" />
             </DropdownMenuSubTrigger>
             <DropdownMenuPortal>
               <DropdownMenuSubContent>

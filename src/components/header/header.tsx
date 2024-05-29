@@ -1,6 +1,5 @@
 "use client";
-import Link from "next/link";
-import {DumbbellIcon, SearchIcon} from "lucide-react";
+
 import {usePathname} from "next/navigation";
 
 import {
@@ -13,8 +12,6 @@ import {
 } from "../ui/dropdown-menu";
 import {Button} from "../ui/button";
 import {SearchClients} from "../clients/search";
-
-import {Input} from "@/components/ui/input";
 
 export function Header() {
   const pathname = usePathname();
@@ -33,7 +30,6 @@ export function Header() {
               alt="Avatar"
               className="rounded-full"
               height="32"
-              src="/placeholder.svg"
               style={{
                 aspectRatio: "32/32",
                 objectFit: "cover",

@@ -1,134 +1,189 @@
 "use client";
 
+import type {Control} from "react-hook-form";
+
 import {zodResolver} from "@hookform/resolvers/zod";
-import React from "react";
-import {useForm} from "react-hook-form";
+import {useFieldArray, useForm} from "react-hook-form";
 import {z} from "zod";
+import {useEffect, useState} from "react";
 import {useUser} from "@clerk/nextjs";
+import {Loader} from "lucide-react";
 import {useRouter} from "next/navigation";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
+
+import {Set} from "./set";
 
 import {Button} from "@/components/ui/button";
-import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
-import {Input} from "@/components/ui/input";
-import supabase from "@/db/api/client";
+import {Form} from "@/components/ui/form";
+import {ExerciseList} from "@/types/exerciseList";
+import {useMetric} from "@/context/metric-context";
 
-const formSchema = z.object({
-  exercise: z.string().min(2, {
-    message: "exercise must be at least 2 characters.",
-  }),
-  category: z
-    .string({
-      required_error: "Category is required",
-    })
-    .min(2, {
-      message: "Select a category",
-    }),
-  type: z
-    .string({
-      required_error: "Type is required",
-    })
-    .min(2, {
-      message: "Select a type",
-    }),
+// import {useMetric} from "@/app/metric-context";
+
+export const formSchema = z.object({
+  exercises: z.array(
+    z
+      .object({
+        dbId: z.string().optional(),
+        name: z.string(),
+        template_id: z.string().optional(),
+        set: z.string().optional(),
+        metric: z.string().optional(),
+        created_at: z.string().optional(),
+        order: z.number().optional(),
+        sets: z.array(
+          z.object({
+            dbId: z.string().optional(),
+            weight: z.coerce.number().nonnegative(),
+            reps: z.coerce.number().nonnegative(),
+            set: z.coerce.number().optional(),
+            created_at: z.string().optional(),
+          }),
+        ),
+      })
+      .optional(),
+  ),
 });
 
-// interface CreateExerciseFormProps {
-//   handleChange: (value: boolean) => void;
-//   isChanged: boolean;
-// }
+interface ExerciseFormProps {
+  handleDeleteExercise: (id: string) => void;
+  exercisesList: ExerciseList[];
+  templateName: string;
+  setOpen: (open: boolean) => void;
+  handleClearTemplate: () => void;
+  isEditing?: boolean;
+  open: boolean;
+  editButton?: string;
+}
 
-export default function CreateExerciseForm() {
+export function ExerciseForm({
+  exercisesList,
+  handleDeleteExercise,
+  templateName,
+  setOpen,
+  handleClearTemplate,
+  isEditing,
+  open,
+  editButton,
+}: ExerciseFormProps) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      exercise: "",
-      category: "",
-      type: "",
-    },
   });
 
-  const {data: category} = useGetCategories();
-  const {data: type} = useGetTypes();
+  const {fields, remove} = useFieldArray({
+    name: "exercises",
+    control: form.control,
+  });
 
   const {user} = useUser();
   const router = useRouter();
-  const queryClient = useQueryClient();
-  const mutation = useMutation({
-    mutationFn: async () => await getExercise(user?.id || ""),
-    onSuccess: () => {
-      // Invalidate and refetch
-      queryClient.invalidateQueries({queryKey: ["exercise_list"]});
-    },
-  });
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
-      const {error} = await supabase.from("exercise_list").insert({
-        name: values.exercise,
-        category: values.category,
-        type: values.type,
-        role: "user",
-        user_id: user?.id,
-      });
+  const {metric} = useMetric();
 
-      mutation.mutate();
-      console.log({error});
-      router.refresh();
-    } catch (error) {
-      console.log(error);
-    }
+  // const onInvalid = (errors) => console.log({errors});
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    console.log({values});
   };
+
+  const onEdit = async (values: z.infer<typeof formSchema>) => {};
+
+  useEffect(() => {
+    if (isEditing) {
+      form.setValue(
+        "exercises",
+        exercisesList.map((exercise) => {
+          return {
+            name: exercise.name,
+            created_at: exercise.created_at,
+            metric: exercise.metric,
+            order: exercise.order,
+            sets: exercise.sets?.map((set) => {
+              return {
+                dbId: set.id,
+                weight: set.weight,
+                reps: set.reps,
+                exercise_id: set.exercise_id,
+                ...(isEditing ? {set: set.set} : {}),
+                created_at: set.created_at,
+              };
+            }) ?? [
+              {
+                dbId: crypto.randomUUID(),
+                weight: 0,
+                reps: 0,
+              },
+            ],
+            dbId: exercise.id,
+            template_id: exercise.template_id,
+          };
+        }),
+      );
+    } else {
+      form.setValue(
+        "exercises",
+        exercisesList.map((exercise) => {
+          return {
+            dbId: exercise.id,
+            name: exercise.name,
+            metric: metric,
+
+            sets: [
+              {
+                dbId: crypto.randomUUID(),
+                weight: 0,
+                reps: 0,
+              },
+            ],
+          };
+        }),
+      );
+    }
+  }, [exercisesList, isEditing, open]);
+
+  useEffect(() => {
+    if (error) {
+      setTimeout(() => {
+        setError(false);
+      }, 5000);
+    }
+  }, [error]);
+
+  const values = form.getValues();
 
   return (
     <Form {...form}>
-      <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
-        <FormField
-          control={form.control}
-          name="exercise"
-          render={({field}) => (
-            <FormItem>
-              <FormLabel>Exercise name</FormLabel>
-              <FormControl>
-                <Input placeholder="Squat" {...field} />
-              </FormControl>
-
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          defaultValue=""
-          name="category"
-          render={({field}) => (
-            <FormItem>
-              <FormLabel>Category</FormLabel>
-              <CategorySelected
-                isCreate
-                options={category || []}
-                onCategoryChange={field.onChange}
+      <form
+        className="mb-10 mt-10 flex flex-col gap-5"
+        onSubmit={isEditing ? form.handleSubmit(onEdit) : form.handleSubmit(onSubmit)}
+      >
+        <section className="flex max-h-[340px] flex-col gap-5 overflow-y-auto">
+          {fields.map((exercise, index) => {
+            return (
+              <Set
+                key={exercise.dbId}
+                control={form.control as unknown as Control}
+                exercise={exercise}
+                form={form}
+                handleDeleteExercise={handleDeleteExercise}
+                index={index}
+                removeExercise={remove}
               />
-
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          defaultValue=""
-          name="type"
-          render={({field}) => (
-            <FormItem>
-              <FormLabel>Type</FormLabel>
-              <TypeSelected isCreate options={type || []} onTypeChange={field.onChange} />
-
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <DialogClose asChild>
-          <Button type="submit">Submit</Button>
-        </DialogClose>
+            );
+          })}
+        </section>
+        <Button
+          disabled={
+            Object.keys(values).length === 0 ||
+            !values.exercises ||
+            values.exercises.length === 0 ||
+            !values.exercises.every((exercise) => exercise?.sets && exercise.sets.length > 0)
+          }
+          type="submit"
+          variant="createTemplate"
+        >
+          {loading ? <Loader /> : isEditing ? editButton ? editButton : "edit" : "Create"}
+        </Button>
       </form>
     </Form>
   );

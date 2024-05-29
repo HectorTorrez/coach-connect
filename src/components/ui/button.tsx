@@ -17,6 +17,9 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         primary:
           "w-full border border-blue-400 text-blue-400 hover:bg-accent hover:text-accent-foreground",
+        addSet: "bg-primary text-primary-foreground hover:bg-primary/90",
+        createTemplate:
+          "w-full border bg-blue-400 hover:bg-accent hover:text-accent-foreground text-black dark:text-white",
       },
       size: {
         default: "h-10 px-4 py-2",

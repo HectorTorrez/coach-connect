@@ -30,8 +30,8 @@ export default function ChooseExercise(props: ChooseExercisesProps) {
   const {user} = useUser();
 
   const {data, isLoading} = useExerciseList(user?.id || "");
-  const {data: types, isLoading: isLoadingTypes} = useTypes();
-  const {data: categories, isLoading: isLoadingCategories} = useCategories();
+  const {data: types} = useTypes();
+  const {data: categories} = useCategories();
 
   const filteredData = data?.filter((exercise) => {
     if (type === "all") setType("");

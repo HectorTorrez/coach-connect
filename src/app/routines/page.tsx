@@ -1,6 +1,6 @@
 import React from "react";
 
-import {DialogCreateRoutine} from "@/components/routines/dialog-create-routine";
+import {DialogCreateRoutine} from "@/components/routines/create-routine";
 
 export default function RoutinesPage() {
   return (

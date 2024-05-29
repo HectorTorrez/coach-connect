@@ -7,6 +7,7 @@ import {Header} from "@/components/header/header";
 import {SideNavMobile} from "@/components/side-nav/side-nav-mobile";
 import {SideNav} from "@/components/side-nav/side-nav";
 import ReactQueryProvider from "@/components/ReactQueryClientProvider";
+import {MetricProvider} from "@/context/metric-context";
 
 export const metadata: Metadata = {
   title: "coach-connect",
@@ -19,34 +20,36 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
       <body>
         <AuthProvider>
           <ReactQueryProvider>
-            <ThemeProvider
-              disableTransitionOnChange
-              enableSystem
-              attribute="class"
-              defaultTheme="system"
-            >
-              <main className="flex flex-col  lg:grid lg:grid-cols-[280px_1fr]">
-                <section className="flex ">
-                  <section className="flex flex-col">
-                    <div className="hidden lg:block">
-                      <SideNav />
-                    </div>
-                  </section>
-                </section>
-
-                <section className="">
-                  <section className="flex items-center ">
-                    <div className="block  h-[60px] border-b lg:hidden">
-                      <SideNavMobile />
-                    </div>
-                    <section className="w-full">
-                      <Header />
+            <MetricProvider>
+              <ThemeProvider
+                disableTransitionOnChange
+                enableSystem
+                attribute="class"
+                defaultTheme="system"
+              >
+                <main className="flex flex-col  lg:grid lg:grid-cols-[280px_1fr]">
+                  <section className="flex ">
+                    <section className="flex flex-col">
+                      <div className="hidden lg:block">
+                        <SideNav />
+                      </div>
                     </section>
                   </section>
-                  <section className="px-4">{children}</section>
-                </section>
-              </main>
-            </ThemeProvider>
+
+                  <section className="">
+                    <section className="flex items-center ">
+                      <div className="block  h-[60px] border-b lg:hidden">
+                        <SideNavMobile />
+                      </div>
+                      <section className="w-full">
+                        <Header />
+                      </section>
+                    </section>
+                    <section className="px-4">{children}</section>
+                  </section>
+                </main>
+              </ThemeProvider>
+            </MetricProvider>
           </ReactQueryProvider>
         </AuthProvider>
       </body>

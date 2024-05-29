@@ -3,7 +3,7 @@ import {useState} from "react";
 
 import {Button} from "../ui/button";
 
-import {AddExercise} from "./dialog-add-exercises";
+import {AddExercise} from "./add-exercises";
 
 import {ExerciseList} from "@/types/exerciseList";
 import {Dialog, DialogContent, DialogHeader, DialogTrigger} from "@/components/ui/dialog";
@@ -17,7 +17,7 @@ export function DialogCreateRoutine() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">Create routine</Button>
+        <Button variant="outline">Create exercise</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

@@ -1,7 +1,6 @@
 "use client";
 
 import {useEffect, useState} from "react";
-import {useQuery} from "@tanstack/react-query";
 import {useUser} from "@clerk/nextjs";
 
 import {Input} from "../ui/input";
@@ -12,10 +11,8 @@ import {CategorySelected} from "../category-selected";
 import {Skeleton} from "../ui/skeleton";
 
 import {ToggleGroup, ToggleGroupItem} from "@/components/ui/toggle-group";
-import {getTypes} from "@/queries/get-types";
-import {getCategories} from "@/queries/get-categories";
-import {getExercise} from "@/queries/get-exercisesList";
 import {ExerciseList} from "@/types/exerciseList";
+import {useCategories, useExerciseList, useTypes} from "@/hooks/useQuery";
 
 interface ChooseExercisesProps {
   handleListExercises: (exercises: ExerciseList[]) => void;
@@ -31,20 +28,10 @@ export default function ChooseExercise(props: ChooseExercisesProps) {
   const [toggleSelected, setToggleSelected] = useState<string[]>([]);
 
   const {user} = useUser();
-  const {data, isLoading} = useQuery({
-    queryKey: ["exercise_list"],
-    queryFn: async () => await getExercise(user?.id || ""),
-  });
 
-  const {data: types, isLoading: isLoadingTypes} = useQuery({
-    queryKey: ["types"],
-    queryFn: async () => await getTypes(),
-  });
-
-  const {data: categories, isLoading: isLoadingCategories} = useQuery({
-    queryKey: ["categories"],
-    queryFn: async () => await getCategories(),
-  });
+  const {data, isLoading} = useExerciseList(user?.id || "");
+  const {data: types, isLoading: isLoadingTypes} = useTypes();
+  const {data: categories, isLoading: isLoadingCategories} = useCategories();
 
   const filteredData = data?.filter((exercise) => {
     if (type === "all") setType("");
@@ -78,7 +65,7 @@ export default function ChooseExercise(props: ChooseExercisesProps) {
   }, [toggleSelected]);
 
   return (
-    <section>
+    <section className="h-[650px]">
       <section className="mb-3 mt-3 ">
         <h3 className="text-xl font-bold ">Choose exercise</h3>
         <form className="flex flex-col gap-5" onSubmit={handleAddExercise}>
@@ -98,12 +85,8 @@ export default function ChooseExercise(props: ChooseExercisesProps) {
             onCategoryChange={onChangeCategory}
           />
           <DialogClose asChild>
-            <Button
-              className="w-full border border-blue-400 text-blue-400"
-              type="submit"
-              variant="ghost"
-            >
-              Add exercise
+            <Button type="submit" variant="primary">
+              Create template
             </Button>
           </DialogClose>
         </form>

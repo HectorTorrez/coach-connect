@@ -1,7 +1,9 @@
 import {Suspense} from "react";
 
-import ChooseExercise from "./dialog-choose-exercise";
-import {DialogCreateRoutine} from "./dialog-create-routine";
+import {Button} from "../ui/button";
+
+import ChooseExercise from "./choose-exercise";
+import {DialogCreateRoutine} from "./create-routine";
 
 import {ExerciseList} from "@/types/exerciseList";
 import {
@@ -19,12 +21,11 @@ interface AddExerciseProps {
 export function AddExercise({handleListExercises}: AddExerciseProps) {
   return (
     <Dialog>
-      <DialogTrigger className="w-full rounded-lg border border-blue-400 p-3 font-bold  text-blue-400">
-        Add exercise
+      <DialogTrigger asChild className="mb-5 mt-5">
+        <Button variant="primary">Add exercise</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader className="mb-10 mt-10">
-          <DialogCreateRoutine />
           <DialogDescription>
             <ChooseExercise handleListExercises={handleListExercises} />
           </DialogDescription>

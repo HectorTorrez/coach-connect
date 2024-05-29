@@ -1,23 +1,47 @@
 "use client";
-import React from "react";
+import React, {useState} from "react";
 import Link from "next/link";
 import {
   BellIcon,
   CalendarIcon,
+  ChevronRight,
   ClipboardIcon,
   DumbbellIcon,
   HomeIcon,
   SettingsIcon,
   UserIcon,
   UsersIcon,
+  Weight,
 } from "lucide-react";
+import {DropdownMenuTrigger} from "@radix-ui/react-dropdown-menu";
 
 import {ModeToggle} from "../dark-toggle";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuPortal,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+} from "../ui/dropdown-menu";
 
 import {Button} from "@/components/ui/button";
 import {linkMenu} from "@/lib/link-menu";
+import {cn} from "@/lib/utils";
+import {useMetric} from "@/context/metric-context";
 
 export function SideNav() {
+  const {handleChangeMetric, metric} = useMetric();
+  const [position, setPosition] = useState(metric);
+
+  const onMetricChange = (value: string) => {
+    handleChangeMetric(value);
+    setPosition(value as "kg" | "lbs");
+  };
+
   return (
     <div className="grid min-h-screen w-full grid-cols-[280px_1fr]">
       <div className=" border-r bg-gray-100/40 dark:bg-gray-800/40">
@@ -51,21 +75,39 @@ export function SideNav() {
                   </Link>
                 );
               })}
-
-              {/* <Link
-                className="flex items-center gap-3 rounded-lg px-3 py-2  transition-all hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
-                href="#"
-              >
-                <CalendarIcon className="h-4 w-4" />
-                Schedule
-              </Link>
-              <Link
-                className="flex items-center gap-3 rounded-lg px-3 py-2  transition-all hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
-                href="#"
-              >
-                <SettingsIcon className="h-4 w-4" />
-                Settings
-              </Link> */}
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center justify-between gap-2 px-3 py-1.5">
+                  <section className="flex items-center gap-2 ">
+                    <Weight className="h-4 w-4" />
+                    <span>Metrics</span>
+                  </section>
+                  <ChevronRight />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-full">
+                  <DropdownMenuRadioGroup
+                    className="flex flex-col gap-2"
+                    value={position}
+                    onValueChange={onMetricChange}
+                  >
+                    <DropdownMenuRadioItem
+                      className={cn("", {
+                        "bg-[#27272a31]": position === "kg",
+                      })}
+                      value="kg"
+                    >
+                      <span className=" text-[14px]">Kg</span>
+                    </DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem
+                      className={cn("", {
+                        "bg-[#27272a31]": position === "lbs",
+                      })}
+                      value="lbs"
+                    >
+                      <span className=" text-[14px]"> Lbs</span>{" "}
+                    </DropdownMenuRadioItem>
+                  </DropdownMenuRadioGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </nav>
           </div>
           {/* <div className="mt-auto p-4">

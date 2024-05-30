@@ -10,7 +10,6 @@ import {
 import {useState} from "react";
 import {usePathname} from "next/navigation";
 
-import {Button} from "../ui/button";
 import {ModeToggle} from "../dark-toggle";
 
 import {

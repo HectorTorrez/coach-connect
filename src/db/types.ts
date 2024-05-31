@@ -81,22 +81,54 @@ export type Database = {
       };
       coach_templates: {
         Row: {
+          coach_workout: string;
           created_at: string;
           id: string;
           name: string;
           user_id: string;
         };
         Insert: {
+          coach_workout: string;
           created_at?: string;
           id?: string;
           name: string;
           user_id?: string;
         };
         Update: {
+          coach_workout?: string;
           created_at?: string;
           id?: string;
           name?: string;
           user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "coach_templates_coach_workout_fkey";
+            columns: ["coach_workout"];
+            isOneToOne: false;
+            referencedRelation: "coach_workout";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      coach_workout: {
+        Row: {
+          created_at: string;
+          id: string;
+          name: string;
+          user_id: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          name: string;
+          user_id?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          name?: string;
+          user_id?: string | null;
         };
         Relationships: [];
       };
@@ -361,20 +393,26 @@ export type Database = {
         Row: {
           created_at: string;
           email: string;
+          external_id: string;
           role: Database["public"]["Enums"]["user_role"];
           user_id: string;
+          username: string;
         };
         Insert: {
           created_at?: string;
           email: string;
+          external_id?: string;
           role?: Database["public"]["Enums"]["user_role"];
           user_id?: string;
+          username: string;
         };
         Update: {
           created_at?: string;
           email?: string;
+          external_id?: string;
           role?: Database["public"]["Enums"]["user_role"];
           user_id?: string;
+          username?: string;
         };
         Relationships: [];
       };

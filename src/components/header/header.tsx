@@ -12,7 +12,7 @@ export function Header() {
   return (
     <header className="flex h-[60px] items-center gap-4 border-b  px-3 ">
       <div className="w-full flex-1">{pathname === "/clients" && <SearchClients />}</div>
-      {isSignedIn ? <UserButton /> : <SignInButton />}
+      {isSignedIn ? <UserButton afterSignOutUrl="/sign-in" /> : <SignInButton />}
     </header>
   );
 }

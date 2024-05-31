@@ -1,25 +1,27 @@
 "use client";
+import {useState} from "react";
+
 import {Button} from "../ui/button";
 
 import AddClientsForm from "./add-clients-form";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import {Dialog, DialogContent, DialogHeader, DialogTrigger} from "@/components/ui/dialog";
 
 export function AddClients() {
+  const [open, setOpen] = useState(false);
+
+  const handleChangeModal = () => {
+    setOpen(!open);
+  };
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline">Add client</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <AddClientsForm />
+          <AddClientsForm handleChangeModal={handleChangeModal} />
         </DialogHeader>
       </DialogContent>
     </Dialog>

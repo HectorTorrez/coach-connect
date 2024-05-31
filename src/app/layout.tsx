@@ -8,6 +8,7 @@ import {SideNavMobile} from "@/components/side-nav/side-nav-mobile";
 import {SideNav} from "@/components/side-nav/side-nav";
 import ReactQueryProvider from "@/components/ReactQueryClientProvider";
 import {MetricProvider} from "@/context/metric-context";
+import {Toaster} from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: "coach-connect",
@@ -48,6 +49,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
                     <section className="px-4">{children}</section>
                   </section>
                 </main>
+                <Toaster />
               </ThemeProvider>
             </MetricProvider>
           </ReactQueryProvider>

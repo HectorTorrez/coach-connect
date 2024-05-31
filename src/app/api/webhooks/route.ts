@@ -2,7 +2,7 @@ import {Webhook} from "svix";
 import {headers} from "next/headers";
 import {WebhookEvent} from "@clerk/nextjs/server";
 
-import supabase from "@/db/api/webhook-server";
+import supabase from "@/db/api/server-with-role";
 
 export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint
@@ -60,7 +60,7 @@ export async function POST(req: Request) {
     }
     await supabase.from("users").insert({
       user_id: evt.data.id,
-      email: evt.data.email_addresses[0]?.email_address ?? null,
+      email: evt.data.email_addresses[0]?.email_address ?? "No email",
       username: evt.data.username,
       role: "coach",
       name: evt.data.first_name + " " + evt.data.last_name,

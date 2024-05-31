@@ -2,6 +2,8 @@ import {Webhook} from "svix";
 import {headers} from "next/headers";
 import {WebhookEvent} from "@clerk/nextjs/server";
 
+import supabase from "@/db/api/webhook-server";
+
 export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
@@ -53,13 +55,30 @@ export async function POST(req: Request) {
   const eventType = evt.type;
 
   if (eventType === "user.created") {
-    console.log(`User with ID ${id} was created`);
+    if (evt.data.username === null) {
+      return new Response("No username", {status: 400});
+    }
+    await supabase.from("users").insert({
+      user_id: evt.data.id,
+      email: evt.data.email_addresses[0]?.email_address ?? null,
+      username: evt.data.username,
+      role: "coach",
+    });
   }
   if (eventType === "user.updated") {
-    console.log(`User with ID ${id} was updated`);
+    if (evt.data.username === null) {
+      return new Response("No username", {status: 400});
+    }
+    await supabase
+      .from("users")
+      .update({
+        email: evt.data.email_addresses[0]?.email_address ?? null,
+        username: evt.data.username,
+      })
+      .match({user_id: id});
   }
   if (eventType === "user.deleted") {
-    console.log(`User with ID ${id} was deleted`);
+    await supabase.from("users").delete().match({user_id: id});
   }
 
   return new Response("", {status: 200});

@@ -24,7 +24,7 @@ export function SearchClients() {
   }, 300);
 
   return (
-    <form>
+    <form onSubmit={(e) => e.preventDefault()}>
       <div className="relative ">
         <SearchIcon className="absolute left-2.5 top-3 h-4 w-4 text-gray-500 dark:text-gray-400" />
         <Input

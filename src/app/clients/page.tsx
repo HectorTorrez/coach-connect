@@ -1,6 +1,8 @@
 import {AddClients} from "@/components/clients/add-clients";
 import {ClientsTable} from "@/components/clients/table";
 
+export const dynamic = "force-dynamic";
+
 export default function ClientsPage({
   searchParams,
 }: {

@@ -2,14 +2,41 @@
 
 import supabase from "@/db/api/server-with-role";
 
-// import supabase from "@/db/api/server";
-
 export async function getCategories() {
   const {data: categories, error} = await supabase.from("exercise_list").select("category");
 
   if (error) throw new Error("Error fetching categories");
 
   return categories;
+}
+
+export async function getClients(userId: string) {
+  const {data: clients, error} = await supabase
+    .from("friends")
+    .select(
+      `
+      reciever_id, 
+      users!friends_reciever_id_fkey (
+        username, 
+        name, 
+        email
+      )
+    `,
+    )
+    .eq("sender_id", userId)
+    .eq("status", "accepted");
+
+  if (clients === null) {
+    return {
+      clients: [],
+      error: "No clients found",
+    };
+  }
+
+  return {
+    clients,
+    error,
+  };
 }
 
 export async function PostAddClient(sender_id: string, username: string) {

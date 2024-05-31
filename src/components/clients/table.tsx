@@ -1,14 +1,28 @@
+import {auth} from "@clerk/nextjs/server";
+
 import {Button} from "../ui/button";
 
+import {getClients} from "@/queries/clients";
 import {TableHead, TableRow, TableHeader, TableCell, TableBody, Table} from "@/components/ui/table";
 
-export function ClientsTable({query}: {query: string}) {
-  console.log(query);
+export async function ClientsTable({query}: {query: string}) {
+  const {userId: id} = auth();
+  const userId = id ?? "";
+  const {clients} = await getClients(userId);
+
+  const filteredClients = clients?.filter((client) => {
+    return client?.users?.username.toLowerCase().includes(query.toLowerCase());
+  });
+
+  if (filteredClients.length === 0) {
+    return <p>No clients found</p>;
+  }
 
   return (
     <Table>
       <TableHeader>
         <TableRow>
+          <TableHead>Username</TableHead>
           <TableHead>Name</TableHead>
           <TableHead>Email</TableHead>
           <TableHead>Routines</TableHead>
@@ -17,50 +31,22 @@ export function ClientsTable({query}: {query: string}) {
         </TableRow>
       </TableHeader>
       <TableBody>
-        <TableRow>
-          <TableCell className="font-medium">John Doe</TableCell>
-          <TableCell>john@example.com</TableCell>
-          <TableCell>3</TableCell>
-          <TableCell>{/* <Progress value={75} /> */}</TableCell>
-          <TableCell>
-            <Button size="sm" variant="outline">
-              View
-            </Button>
-          </TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell className="font-medium">Jane Smith</TableCell>
-          <TableCell>jane@example.com</TableCell>
-          <TableCell>2</TableCell>
-          <TableCell>{/* <Progress value={50} /> */}</TableCell>
-          <TableCell>
-            <Button size="sm" variant="outline">
-              View
-            </Button>
-          </TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell className="font-medium">Michael Johnson</TableCell>
-          <TableCell>michael@example.com</TableCell>
-          <TableCell>4</TableCell>
-          <TableCell>{/* <Progress value={90} /> */}</TableCell>
-          <TableCell>
-            <Button size="sm" variant="outline">
-              View
-            </Button>
-          </TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell className="font-medium">Emily Davis</TableCell>
-          <TableCell>emily@example.com</TableCell>
-          <TableCell>1</TableCell>
-          <TableCell>{/* <Progress value={30} /> */}</TableCell>
-          <TableCell>
-            <Button size="sm" variant="outline">
-              View
-            </Button>
-          </TableCell>
-        </TableRow>
+        {filteredClients?.map((client) => {
+          return (
+            <TableRow key={client?.reciever_id}>
+              <TableCell className="font-medium">{client?.users?.username}</TableCell>
+              <TableCell>{client?.users?.name}</TableCell>
+              <TableCell>{client?.users?.email}</TableCell>
+              {/* <TableCell>{client?.routines}</TableCell> */}
+              <TableCell>{/* <Progress value={client.progress} /> */}</TableCell>
+              <TableCell>
+                <Button size="sm" variant="outline">
+                  View
+                </Button>
+              </TableCell>
+            </TableRow>
+          );
+        })}
       </TableBody>
     </Table>
   );

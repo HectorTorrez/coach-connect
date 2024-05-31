@@ -63,6 +63,7 @@ export async function POST(req: Request) {
       email: evt.data.email_addresses[0]?.email_address ?? null,
       username: evt.data.username,
       role: "coach",
+      name: evt.data.first_name + " " + evt.data.last_name,
     });
   }
   if (eventType === "user.updated") {
@@ -74,6 +75,7 @@ export async function POST(req: Request) {
       .update({
         email: evt.data.email_addresses[0]?.email_address ?? null,
         username: evt.data.username,
+        name: evt.data.first_name + " " + evt.data.last_name,
       })
       .match({user_id: id});
   }

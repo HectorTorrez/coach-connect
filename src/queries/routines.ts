@@ -45,3 +45,28 @@ export async function CreateRoutine(
     }
   });
 }
+
+export async function GetRoutines(user_id: string, workoutId: string) {
+  const {data: routines, error} = await supabase
+    .from("coach_workout")
+    .select("id, name, coach_templates(*, coach_exercise(*, coach_sets(*)))")
+    .eq("user_id", user_id)
+    .eq("id", workoutId)
+    .order("created_at", {ascending: false});
+
+  if (routines) {
+    routines.forEach((t) => {
+      t.coach_templates.forEach((e) => {
+        e.coach_exercise.sort((a, b) => Number(a.order) - Number(b.order));
+        e.coach_exercise.forEach((s) => {
+          s.coach_sets.sort((a, b) => Number(a.set) - Number(b.set));
+        });
+      });
+    });
+  }
+
+  return {
+    routines,
+    error,
+  };
+}

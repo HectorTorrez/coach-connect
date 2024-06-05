@@ -13,13 +13,13 @@ import {
 import {DeleteWorkout} from "@/components/routines/delete-workoute";
 
 interface DropdownWorkoutProps {
-  routine: {
+  workout: {
     id: string;
     name: string;
   };
 }
 
-export function DropdownWorkout({routine}: DropdownWorkoutProps) {
+export function DropdownWorkout({workout}: DropdownWorkoutProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -34,9 +34,9 @@ export function DropdownWorkout({routine}: DropdownWorkoutProps) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="flex w-56 flex-col gap-2 ">
-        <CreateWorkout isEdit name={routine.name} workoutId={routine.id} />
+        <CreateWorkout isEdit name={workout.name} workoutId={workout.id} />
 
-        <DeleteWorkout id={routine.id} />
+        <DeleteWorkout id={workout.id} />
       </DropdownMenuContent>
     </DropdownMenu>
   );

@@ -10,7 +10,7 @@ import {toast} from "../ui/use-toast";
 import {Button} from "../ui/button";
 
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
-import {PostCreateRoutine, PutUpdateRoutine} from "@/queries/routines";
+import {PostCreateWorkout, PutUpdateWorkout} from "@/queries/workout";
 
 const formSchema = z.object({
   workoutName: z.string().min(2).max(20),
@@ -44,7 +44,7 @@ export function CreateWorkoutForm({setOpen, isEdit, workoutId, name}: CreateWork
       });
     }
 
-    const {routine, error} = await PostCreateRoutine(workoutName, user.id);
+    const {workouts, error} = await PostCreateWorkout(workoutName, user.id);
 
     if (error) {
       return toast({
@@ -52,9 +52,9 @@ export function CreateWorkoutForm({setOpen, isEdit, workoutId, name}: CreateWork
         variant: "destructive",
       });
     }
-    if (routine) {
+    if (workouts) {
       toast({
-        title: "Routine created",
+        title: "Workout created",
         variant: "success",
       });
       router.refresh();
@@ -78,9 +78,7 @@ export function CreateWorkoutForm({setOpen, isEdit, workoutId, name}: CreateWork
         title: "Workout id not found",
         variant: "destructive",
       });
-    const {routine, error} = await PutUpdateRoutine(workoutName, workoutId);
-
-    console.log(routine);
+    const {workouts, error} = await PutUpdateWorkout(workoutName, workoutId);
 
     if (error) {
       return toast({
@@ -88,9 +86,9 @@ export function CreateWorkoutForm({setOpen, isEdit, workoutId, name}: CreateWork
         variant: "destructive",
       });
     }
-    if (routine) {
+    if (workouts) {
       toast({
-        title: "Routine created",
+        title: "Workout created",
         variant: "success",
       });
       router.refresh();

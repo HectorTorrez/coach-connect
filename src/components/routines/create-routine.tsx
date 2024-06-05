@@ -64,7 +64,9 @@ export function DialogCreateRoutine({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">Create exercise</Button>
+        <Button className="w-[200px]" variant="primary">
+          Create exercise
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

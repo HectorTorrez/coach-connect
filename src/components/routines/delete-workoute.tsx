@@ -17,7 +17,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import {DeleteRoutine} from "@/queries/routines";
+import {DeleteWorkout as DeleteW} from "@/queries/workout";
 
 interface DeleteWorkoutProps {
   id: string;
@@ -36,7 +36,7 @@ export function DeleteWorkout({id}: DeleteWorkoutProps) {
     return;
   }
   const handleDelete = async () => {
-    const {error} = await DeleteRoutine(id, user?.id);
+    const {error} = await DeleteW(id, user?.id);
 
     if (error) {
       if (error) {

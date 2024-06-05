@@ -11,12 +11,14 @@ const buttonVariants = cva(
       variant: {
         default: "bg-primary text-primary-foreground hover:bg-primary/90",
         destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+        desctructiveGhost:
+          "hover:bg-destructive text-destructive hover:text-destructive-foreground",
         outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
         secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
         primary:
-          "w-full border border-blue-400 text-blue-400 hover:bg-accent hover:text-accent-foreground",
+          "w-full border border-blue-400 text-blue-400 hover:bg-accent hover:text-accent-foreground cursor-pointer",
         addSet: "bg-primary text-primary-foreground hover:bg-primary/90",
         createTemplate:
           "w-full border bg-blue-400 hover:bg-accent hover:text-accent-foreground text-black dark:text-white",

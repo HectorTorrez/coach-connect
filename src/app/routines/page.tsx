@@ -5,6 +5,7 @@ import Link from "next/link";
 import {CreateWorkout} from "@/components/routines/create-workout";
 import {getWorkouts} from "@/queries/workout";
 import {DropdownWorkout} from "@/components/routines/dropdown-workout";
+import {DeleteWorkout} from "@/components/routines/delete-workoute";
 
 export const dynamic = "force-dynamic";
 
@@ -42,7 +43,11 @@ export default async function RoutinesPage() {
                 </Link>
                 <section className="flex h-full items-center rounded-lg rounded-l-none border border-l-0 p-4">
                   <section className="flex h-full items-center">
-                    <DropdownWorkout workout={workout} />
+                    <DropdownWorkout>
+                      <CreateWorkout isEdit name={workout.name} workoutId={workout.id} />
+
+                      <DeleteWorkout id={workout.id} />
+                    </DropdownWorkout>
                   </section>
                 </section>
               </section>

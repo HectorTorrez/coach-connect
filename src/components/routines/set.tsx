@@ -5,9 +5,12 @@ import type {z} from "zod";
 
 import {useFieldArray} from "react-hook-form";
 import {useEffect} from "react";
+import {useUser} from "@clerk/nextjs";
+import {useRouter} from "next/navigation";
 
 import {Input} from "../ui/input";
 import {Button} from "../ui/button";
+import {toast} from "../ui/use-toast";
 
 import {DeleteSet} from "./delete-set";
 import {DeleteExerciseMenu} from "./delete-exercise-menu";
@@ -17,6 +20,7 @@ import supabase from "@/db/api/client";
 import {Exercises, FieldsSet} from "@/types/exerciseList";
 import {convertWeight} from "@/lib/convert-weight";
 import {useMetric} from "@/context/metric-context";
+import {DeleteSet as DeleteS} from "@/queries/routines";
 
 interface SetProps {
   control: Control;
@@ -46,10 +50,33 @@ export function Set({
   });
   const {metric: newMetric} = useMetric();
   const fields = untypedFields as unknown as FieldArrayWithId<FieldsSet>[];
-
+  const router = useRouter();
+  const {user} = useUser();
+  const userId = user?.id;
   const removeSet = async (id: string, index: number) => {
+    if (userId === null || userId === undefined) {
+      return toast({
+        title: "You must be logged in to delete an exercise",
+        variant: "destructive",
+      });
+    }
     remove(index);
-    await supabase.from("sets").delete().eq("id", id);
+
+    const {data, error} = await DeleteS(id, userId);
+
+    if (error) {
+      toast({
+        title: error,
+        variant: "destructive",
+      });
+    }
+    if (data) {
+      toast({
+        title: "Set deleted",
+        variant: "success",
+      });
+      router.refresh();
+    }
   };
 
   const setCount = fields.length;

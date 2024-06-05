@@ -10,13 +10,15 @@ import {useUser} from "@clerk/nextjs";
 import {Loader} from "lucide-react";
 import {useRouter} from "next/navigation";
 
+import {toast} from "../ui/use-toast";
+
 import {Set} from "./set";
 
 import {Button} from "@/components/ui/button";
 import {Form} from "@/components/ui/form";
 import {ExerciseList} from "@/types/exerciseList";
 import {useMetric} from "@/context/metric-context";
-import {CreateRoutine} from "@/queries/routines";
+import {CreateRoutine, UpdateRoutine} from "@/queries/routines";
 
 // import {useMetric} from "@/app/metric-context";
 
@@ -26,7 +28,7 @@ export const formSchema = z.object({
       .object({
         dbId: z.string().optional(),
         name: z.string(),
-        template_id: z.string().optional(),
+        coach_template_id: z.string().optional(),
         set: z.string().optional(),
         metric: z.string().optional(),
         created_at: z.string().optional(),
@@ -86,13 +88,46 @@ export function ExerciseForm({
   // const onInvalid = (errors) => console.log({errors});
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+    setLoading(true);
     if (!user) return router.push("/login");
     if (!workoutId) return router.push("/routines");
-    const data = await CreateRoutine(values, user.id, templateName, workoutId);
+    try {
+      await CreateRoutine(values, user.id, templateName, workoutId);
+      setTimeout(() => {
+        setLoading(false);
+        setOpen(false);
+        router.refresh();
+      }, 1000);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "There was an error creating the routine",
+        variant: "destructive",
+      });
+      setLoading(false);
+    }
   };
 
-  const onEdit = async (values: z.infer<typeof formSchema>) => {};
+  const onEdit = async (values: z.infer<typeof formSchema>) => {
+    setLoading(true);
+    if (!user) return router.push("/login");
+    if (!workoutId) return router.push("/routines");
+    try {
+      await UpdateRoutine(values, user?.id ?? "", templateName, workoutId ?? "", metric);
+      setTimeout(() => {
+        setLoading(false);
+        setOpen(false);
+        router.refresh();
+      }, 1000);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "There was an error creating the routine",
+        variant: "destructive",
+      });
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (isEditing) {
@@ -104,7 +139,7 @@ export function ExerciseForm({
             created_at: exercise.created_at,
             metric: exercise.metric,
             order: exercise.order,
-            sets: exercise.sets?.map((set) => {
+            sets: exercise.coach_sets?.map((set) => {
               return {
                 dbId: set.id,
                 weight: set.weight,
@@ -121,7 +156,7 @@ export function ExerciseForm({
               },
             ],
             dbId: exercise.id,
-            template_id: exercise.template_id,
+            coach_template_id: exercise.coach_template_id,
           };
         }),
       );

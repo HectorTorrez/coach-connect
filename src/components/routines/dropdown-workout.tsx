@@ -13,13 +13,14 @@ import {
 import {DeleteWorkout} from "@/components/routines/delete-workoute";
 
 interface DropdownWorkoutProps {
-  workout: {
-    id: string;
-    name: string;
-  };
+  // workout?: {
+  //   id: string;
+  //   name: string;
+  // };
+  children: React.ReactNode;
 }
 
-export function DropdownWorkout({workout}: DropdownWorkoutProps) {
+export function DropdownWorkout({children}: DropdownWorkoutProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -33,11 +34,7 @@ export function DropdownWorkout({workout}: DropdownWorkoutProps) {
           <Ellipsis className="h-5 w-5" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="flex w-56 flex-col gap-2 ">
-        <CreateWorkout isEdit name={workout.name} workoutId={workout.id} />
-
-        <DeleteWorkout id={workout.id} />
-      </DropdownMenuContent>
+      <DropdownMenuContent className="flex w-56 flex-col gap-2 ">{children}</DropdownMenuContent>
     </DropdownMenu>
   );
 }

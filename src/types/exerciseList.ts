@@ -2,8 +2,8 @@ export interface ExerciseList {
   created_at?: string;
   id: string;
   name: string;
-  template_id?: string;
-  sets?: Set[];
+  coach_template_id?: string;
+  coach_sets?: Set[];
   metric?: string;
   order?: number;
 }
@@ -15,6 +15,7 @@ export interface Set {
   reps: number;
   set?: number;
   exercise_id?: string;
+  dbId?: string;
 }
 
 export type FieldsSet = {
@@ -31,7 +32,8 @@ export interface Exercises {
   dbId?: string;
   name: string;
   created_at?: string;
-  template_id?: string;
+  coach_template_id?: string;
   sets: Set[];
   metric?: string;
+  order?: number;
 }

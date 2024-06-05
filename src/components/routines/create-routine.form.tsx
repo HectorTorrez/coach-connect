@@ -16,6 +16,7 @@ import {Button} from "@/components/ui/button";
 import {Form} from "@/components/ui/form";
 import {ExerciseList} from "@/types/exerciseList";
 import {useMetric} from "@/context/metric-context";
+import {CreateRoutine} from "@/queries/routines";
 
 // import {useMetric} from "@/app/metric-context";
 
@@ -53,6 +54,7 @@ interface ExerciseFormProps {
   isEditing?: boolean;
   open: boolean;
   editButton?: string;
+  workoutId?: string;
 }
 
 export function ExerciseForm({
@@ -64,6 +66,7 @@ export function ExerciseForm({
   isEditing,
   open,
   editButton,
+  workoutId,
 }: ExerciseFormProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -83,7 +86,10 @@ export function ExerciseForm({
   // const onInvalid = (errors) => console.log({errors});
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log({values});
+    console.log(values);
+    if (!user) return router.push("/login");
+    if (!workoutId) return router.push("/routines");
+    const data = await CreateRoutine(values, user.id, templateName, workoutId);
   };
 
   const onEdit = async (values: z.infer<typeof formSchema>) => {};

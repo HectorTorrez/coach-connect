@@ -16,7 +16,7 @@ interface CreateTemplatesProps {
   isEditingTemplateName?: string;
   isEditingExercises?: ExerciseList[];
   editButton?: string;
-
+  workoutId?: string;
   isEditingClassName?: string;
 }
 
@@ -25,7 +25,7 @@ export function DialogCreateRoutine({
   isEditingExercises,
   isEditingTemplateName,
   editButton,
-
+  workoutId,
   isEditingClassName,
 }: CreateTemplatesProps) {
   const [templateName, setTemplateName] = useState("Template name");
@@ -90,6 +90,7 @@ export function DialogCreateRoutine({
               open={open}
               setOpen={setOpen}
               templateName={templateName}
+              workoutId={workoutId}
             />
           </section>
         </DialogHeader>

@@ -1,88 +1,47 @@
 "use server";
+import {z} from "zod";
 
+import {formSchema} from "@/components/routines/create-routine.form";
 import supabase from "@/db/api/server-with-role";
+import {Exercises} from "@/types/exerciseList";
 
-export async function getRoutines(user_id: string) {
-  const {data: routines, error} = await supabase
-    .from("coach_workout")
-    .select("name, id")
-    .eq("user_id", user_id)
-    .order("created_at", {ascending: false});
-
-  if (error) {
-    return {
-      error: "Error fetching routines. Please try again.",
-      routines: null,
-    };
-  }
-
-  return {
-    routines,
-    error,
-  };
-}
-
-export async function PostCreateRoutine(name: string, user_id: string) {
-  const {data: routine, error} = await supabase
-    .from("coach_workout")
+export async function CreateRoutine(
+  values: z.infer<typeof formSchema>,
+  user_id: string,
+  templateName: string,
+  workoutId: string,
+) {
+  const {data: routine} = await supabase
+    .from("coach_templates")
     .insert({
-      name,
+      name: templateName,
       user_id,
+      coach_workout: workoutId,
     })
-    .select();
+    .select("id");
 
-  if (error) {
-    return {
-      error: "Error creating routine. Please try again.",
-      routine: null,
-    };
-  }
+  values.exercises.forEach(async (exercise: Exercises | undefined, index) => {
+    if (exercise) {
+      const {data: exerciseData} = await supabase
+        .from("coach_exercise")
+        .insert({
+          name: exercise.name, // Add the 'name' property
+          coach_template_id: routine?.[0].id,
+          metric: exercise.metric ?? "kg",
+          order: index,
+          user_id: user_id,
+        })
+        .select("id");
 
-  return {
-    routine,
-    error,
-  };
-}
-
-export async function PutUpdateRoutine(name: string, id: string) {
-  const {data: routine, error} = await supabase
-    .from("coach_workout")
-    .update({
-      name,
-    })
-    .eq("id", id)
-    .select();
-
-  if (error) {
-    return {
-      error: "Error updating routine. Please try again.",
-      routine: null,
-    };
-  }
-
-  return {
-    routine,
-    error,
-  };
-}
-
-export async function DeleteRoutine(id: string, user_id: string) {
-  const {data, error} = await supabase
-    .from("coach_workout")
-    .delete()
-    .eq("id", id)
-    .eq("user_id", user_id)
-    .select();
-
-  if (error) {
-    return {
-      error: "Error deleting routine. Please try again.",
-      data: null,
-    };
-  }
-
-  return {
-    data,
-    error,
-  };
+      exercise.sets.forEach(async (set, index) => {
+        await supabase.from("coach_sets").insert({
+          weight: set.weight,
+          reps: set.reps,
+          exercise_id: exerciseData?.[0].id,
+          set: set.set ?? index + 1,
+          user_id: user_id,
+        });
+      });
+    }
+  });
 }

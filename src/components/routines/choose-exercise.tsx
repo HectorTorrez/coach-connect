@@ -108,7 +108,7 @@ export default function ChooseExercise(props: ChooseExercisesProps) {
                 className="w-full p-2"
                 value={`${exercise.name} (${exercise.type})`}
               >
-                {exercise.name}
+                {exercise.name} ({exercise.type})
               </ToggleGroupItem>
             ))}
           </ToggleGroup>

@@ -207,12 +207,22 @@ button[data-localization-key='userProfile.start.dangerSection.deleteAccountButto
 }
 
 .cl-userButtonPopoverCard {
-  @apply rounded-md;
+  @apply rounded-md 
+}
+
+.cl-userButtonPopoverFooter{
+  @apply  bg-inherit;
+
 }
 
 .cl-userButtonPopoverFooter a {
   @apply hover:text-muted-foreground;
 }
+.cl-userButtonPopoverMain{
+  @apply border-b border-input bg-inherit;
+
+}
+
 
 .cl-footer {
   background: transparent;

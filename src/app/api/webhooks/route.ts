@@ -64,18 +64,21 @@ export async function POST(req: Request) {
       username: evt.data.username,
       role: "coach",
       name: evt.data.first_name + " " + evt.data.last_name,
+      image: evt.data.image_url,
     });
   }
   if (eventType === "user.updated") {
     if (evt.data.username === null) {
       return new Response("No username", {status: 400});
     }
+
     await supabase
       .from("users")
       .update({
-        email: evt.data.email_addresses[0]?.email_address ?? null,
+        email: evt.data.email_addresses[0]?.email_address ?? "No email",
         username: evt.data.username,
         name: evt.data.first_name + " " + evt.data.last_name,
+        image: evt.data.image_url,
       })
       .match({user_id: id});
   }

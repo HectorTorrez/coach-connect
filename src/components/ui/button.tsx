@@ -18,7 +18,7 @@ const buttonVariants = cva(
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
         primary:
-          "w-full border border-blue-400 text-blue-400 hover:bg-accent hover:text-accent-foreground cursor-pointer",
+          "w-full border border-blue-400 text-white hover:bg-blue-100 hover:text-blue-400 cursor-pointer bg-blue-400",
         addSet: "bg-primary text-primary-foreground hover:bg-primary/90",
         createTemplate:
           "w-full border bg-blue-400 hover:bg-accent hover:text-accent-foreground text-black dark:text-white",

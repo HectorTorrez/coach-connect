@@ -12,8 +12,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {Button} from "@/components/ui/button";
-import {DropdownWorkout} from "@/components/routines/dropdown-workout";
 import {DeleteRoutine} from "@/components/routines/delete-routine";
+import {DropdownWorkout} from "@/components/default-dropdown";
 
 export default async function RoutinePage({params}: {params: {id: string}}) {
   const user = auth();
@@ -63,21 +63,6 @@ export default async function RoutinePage({params}: {params: {id: string}}) {
                           <p>
                             ({exercise.coach_sets.length}) x {exercise.name}
                           </p>
-                          {/* <section>
-                          {exercise.coach_sets.map((set) => (
-                            <section key={set.id} className="flex gap-4">
-                              <p className="flex flex-col  items-center">
-                                Set <span>{set.set}</span>
-                              </p>
-                              <p className="flex flex-col  items-center">
-                                Weight <span>{set.weight}</span>
-                                </p>
-                              <p className="flex flex-col items-center">
-                                Reps <span>{set.reps}</span>
-                              </p>
-                            </section>
-                          ))}
-                        </section> */}
                         </section>
                       ))}
                     </section>

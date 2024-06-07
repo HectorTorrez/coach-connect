@@ -4,8 +4,8 @@ import Link from "next/link";
 
 import {CreateWorkout} from "@/components/routines/create-workout";
 import {getWorkouts} from "@/queries/workout";
-import {DropdownWorkout} from "@/components/routines/dropdown-workout";
 import {DeleteWorkout} from "@/components/routines/delete-workoute";
+import {DropdownWorkout} from "@/components/default-dropdown";
 
 export const dynamic = "force-dynamic";
 

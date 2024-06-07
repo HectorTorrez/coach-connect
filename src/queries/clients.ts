@@ -36,6 +36,7 @@ export async function getClients(userId: string) {
     .select(
       `
       reciever_id, 
+      status,
       users!friends_reciever_id_fkey (
         username, 
         name, 
@@ -45,7 +46,7 @@ export async function getClients(userId: string) {
     `,
     )
     .eq("sender_id", userId)
-    .eq("status", "accepted");
+    .in("status", ["accepted", "pending"]);
 
   if (clients === null) {
     return {
@@ -97,5 +98,26 @@ export async function PostAddClient(sender_id: string, username: string) {
   return {
     friends,
     friendsError,
+  };
+}
+
+export async function DeleteClient(user_id: string, reciever_id: string) {
+  const {data, error} = await supabase
+    .from("friends")
+    .delete()
+    .eq("sender_id", user_id)
+    .eq("reciever_id", reciever_id)
+    .select();
+
+  if (error) {
+    return {
+      error: "Error deleting client",
+      data: null,
+    };
+  }
+
+  return {
+    error: null,
+    data,
   };
 }

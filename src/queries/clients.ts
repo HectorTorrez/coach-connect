@@ -10,6 +10,26 @@ export async function getCategories() {
   return categories;
 }
 
+export async function getClient(userId: string) {
+  const {data: client, error} = await supabase
+    .from("users")
+    .select("*")
+    .eq("user_id", userId)
+    .single();
+
+  if (error) {
+    return {
+      client: null,
+      error: "Client not found",
+    };
+  }
+
+  return {
+    client,
+    error,
+  };
+}
+
 export async function getClients(userId: string) {
   const {data: clients, error} = await supabase
     .from("friends")
@@ -19,7 +39,8 @@ export async function getClients(userId: string) {
       users!friends_reciever_id_fkey (
         username, 
         name, 
-        email
+        email,
+        image
       )
     `,
     )

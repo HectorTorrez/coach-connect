@@ -17,7 +17,9 @@ export function AddClients() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">Add client</Button>
+        <Button className="max-w-[300px]" variant="primary">
+          Add client
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

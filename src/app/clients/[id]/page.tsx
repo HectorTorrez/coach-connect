@@ -1,4 +1,4 @@
-import {AtSign, Mail} from "lucide-react";
+import {AtSign, Info, Mail} from "lucide-react";
 import {auth} from "@clerk/nextjs/server";
 
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
@@ -11,6 +11,9 @@ import {clientHasRoutine, userRoutine} from "@/queries/user-routines";
 import {ClientCurrentRoutine} from "@/components/clients/client-current-routine";
 import {DropdownWorkout} from "@/components/default-dropdown";
 import {DeleteCurrentRoutine} from "@/components/clients/delete-current-routine";
+import {Note} from "@/components/clients/note";
+import {getNoteWorkout} from "@/queries/notes";
+import {DeleteNote} from "@/components/clients/delete-note";
 
 export default async function ClientPage({params}: {params: {id: string}}) {
   const {id} = params;
@@ -25,6 +28,7 @@ export default async function ClientPage({params}: {params: {id: string}}) {
   const userRoutineId = data?.id ?? "";
 
   const {routine} = await userRoutine(routineId, coachId);
+  const {data: notes} = await getNoteWorkout(coachId, id);
 
   return (
     <section className="flex flex-col gap-4 py-4 ">
@@ -75,7 +79,30 @@ export default async function ClientPage({params}: {params: {id: string}}) {
               </CurrentRoutine>
             )}
           </section>
+          <section className="flex flex-col p-4">
+            <section className="flex items-center justify-between">
+              <section className="flex items-center">
+                <Info className="mr-2 h-4 w-4" />
+                <p>Note: </p>
+              </section>
+              <section>
+                <DeleteNote
+                  clientId={id}
+                  disabled={notes === null}
+                  noteId={notes?.id ?? ""}
+                  type="workout"
+                  user_id={coachId}
+                />
+              </section>
+            </section>
+            <p className="">{notes?.note}</p>
+          </section>
         </section>
+        <section className="flex flex-col border p-4">
+          <Note client_id={id} />
+        </section>
+      </section>
+      <section className="flex flex-col gap-10 md:grid md:grid-cols-auto-fill-minmax">
         <CardInfo title="Weight">
           <p className="text-lg font-medium text-blue-400">
             {client?.weight === null ? 0 : client?.weight} {client?.weight_metric}
